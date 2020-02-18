@@ -1,0 +1,165 @@
+<html>
+    <head>
+        <style>
+
+            .mainWindow {
+                border : 0.5px solid black;
+                width : 500px;
+                height : 560px;
+                background : #f0f0f0;
+                font-size : 12pt;
+                
+            }
+            .title {
+                height : 25px;
+                line-height : 25px;
+                background : #fff;
+                font-family: "Segoe UI";
+                font-size : 90%;
+                padding-left : 1%;
+                border-left : 0.5px solid black;
+                margin-bottom : 6px;
+            }
+            .sub {
+                display : inline;
+            }
+
+            .buttonRow {
+                font-size : 0;
+                height : 30px;
+                margin-top : 5px;
+            }
+
+            .tab {
+                display : inline-block;
+                background : #f0f0f0;
+                border : 0.1px solid #a0a0a0;
+                margin-top: 2px 0 0 0 ;
+                font-size : 9pt;
+                padding : 2px 6px 2px 6px;
+                height : 24px;
+            }
+
+            .activeTab {
+                background : #fff;
+                border-bottom : 3px solid white;
+                padding-top : 4px;
+            }
+
+            .mainUi {
+                background : #fff;
+                width : 100%;
+                height : 440px;
+                margin-top : 0px;
+                border : 0.1px solid #a0a0a0;
+                z-index : 100;
+                padding-top : 8px;
+                font-size:90%;
+                font-weight: 600;
+
+            }
+
+            .wireBox{
+                border : 0.1px solid #808080;
+                display : inline-block;
+                margin : 10px;
+                flex-grow : 1;
+            }
+
+            .wideColumn {
+  
+                display : flex;
+                flex-basis : 55%;
+                flex-direction : column;
+                flex-grow : 0;
+            }
+            
+            .narrowColumn {
+
+                display : flex;
+                flex-basis : 50%;
+                flex-direction : column;
+                flex-grow : 0;
+            }
+
+            #firstRow {
+                height : 250px;
+            }
+
+            #secondRow {
+                height : 100px;
+            }
+
+            .row {
+                display : flex;
+                flex-direction : row;
+            }
+            
+            .boxLabel {
+                position : relative;
+                left : 5px;
+                top : -12px;
+                background : #fff;
+                padding : 2px;
+            }
+
+        </style>
+    </head>
+    <body>
+
+        <div class = 'mainWindow'> <!-- this is the main window for the gui -->
+            <div class = 'title'>
+                <div class = 'sub'>Acquisition Setup</span>
+            </div>
+
+            <div class = 'mainGuiContainer'>
+                <div class = 'buttonRow'>
+                    <div class = 'tab activeTab'>Camera Setup</div>
+                    <div class = 'tab'>FVB</div>
+                    <div class = 'tab'>Auto-Save</div>
+                    <div class = 'tab'>Spooling</div>
+                    <div class = 'tab'>Data Averaging Filters</div>
+                </div>
+            </div>
+
+            <div class = mainUi>
+                <div id = "firstRow" class = "row">
+                    <div id = "timings" class = "wideColumn">
+                        <div class = "wireBox">
+                        <span class = "boxLabel">Timings</span>
+                        </div>
+                    </div>
+                    <div id = "column2" class = "narrowColumn">
+                        <div class = "wireBox">
+                        <span class = "boxLabel">Vertical Pixel Shift</span>
+                        </div>
+
+                        <div class = "wireBox">
+                            <span class = "boxLabel">Horizontal Pixel Shift</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id = "secondRow" class = "row">
+                    <div id = "Baseline" class = "wideColumn">
+                        <div class = "wireBox">
+                        <span class = "boxLabel">Baseline</span>
+                        </div>
+                    </div>
+                    <div id = "column2" class = "narrowColumn">
+                        <div class = "wireBox">
+                        <span class = "boxLabel">Electron Multiplier (EM) Gain</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id = "thirdRow" class = "row">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </body>
+</html>
