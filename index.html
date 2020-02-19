@@ -4,7 +4,7 @@
 
             .mainWindow {
                 border : 0.5px solid black;
-                width : 500px;
+                width : 540px;
                 height : 560px;
                 background : #f0f0f0;
                 font-size : 12pt;
@@ -54,7 +54,7 @@
                 border : 0.1px solid #a0a0a0;
                 z-index : 100;
                 padding-top : 8px;
-                font-size:90%;
+                font-size:85%;
                 font-weight: 600;
 
             }
@@ -69,7 +69,7 @@
             .wideColumn {
   
                 display : flex;
-                flex-basis : 55%;
+                flex-basis : 65%;
                 flex-direction : column;
                 flex-grow : 0;
             }
@@ -82,12 +82,24 @@
                 flex-grow : 0;
             }
 
+            .fullColumn {
+                display : flex;
+                flex-basis : 100%;
+                flex-direction : column;
+                flex-grow : 0;
+            }
+
+
             #firstRow {
                 height : 250px;
             }
 
             #secondRow {
                 height : 100px;
+            }
+
+            #thirdRow {
+                height : 80px;
             }
 
             .row {
@@ -101,7 +113,39 @@
                 top : -12px;
                 background : #fff;
                 padding : 2px;
+                font-weight : lighter;
             }
+
+            table {
+                font-size :100%;
+                padding : 0px;
+                margin : -10px 5px 0 5px;
+                width : 100%;
+            }
+
+            td {
+                width : 50%;
+                white-space:nowrap;
+                vertical-align : middle;
+            }
+
+            .guiTextBox {
+                width : 80px;
+            }
+
+            input[type=checkbox]{
+                padding-top:3px;
+            }
+
+            input[type=number]::-webkit-inner-spin-button {
+                opacity: 1;
+            }
+
+            select {
+                font-size : 8pt;
+            }
+}
+
 
         </style>
     </head>
@@ -127,15 +171,124 @@
                     <div id = "timings" class = "wideColumn">
                         <div class = "wireBox">
                         <span class = "boxLabel">Timings</span>
+                        <table>
+                            <tr>
+                                <td>Exposure Time (secs)</td>
+                                <td><input type = "text" class = "guiTextBox"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Number of Accumulations</td>
+                                <td><input type = "text" class = "guiTextBox"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Accum Cycle Time (secs)</td>
+                                <td><input type = "text" class = "guiTextBox"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Kinetic Series Length</td>
+                                <td><input type = "text" class = "guiTextBox"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Kinetic Cycle Time (secs)</td>
+                                <td><input type = "text" class = "guiTextBox"></td>
+                            </tr>
+
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
+                        <table>
+                            <tr>
+                                <td style = "width:40%;">
+                                    <label class = "checkbox-label">
+                                    <input type = "checkbox"> 
+                                    <span class = "checkbox-custom"></span>
+                                    Frame Transfer
+                                </label>
+                                </td>
+                                <td><input type = "checkbox"> Cosmic Ray Removal</td>
+                            </tr>
+
+                        </table>
                         </div>
                     </div>
                     <div id = "column2" class = "narrowColumn">
                         <div class = "wireBox">
                         <span class = "boxLabel">Vertical Pixel Shift</span>
+                        <table>
+                            <tr>
+                                <td>
+                                    Shift Speed (usecs)
+                                </td>
+                                <td>
+                                    <select id = "shiftSpeed">
+                                        <option value = "0.6">[0.6]</option>
+                                        <option value = "0.6">[1.13]</option>
+                                        <option value = "0.6">[2.2]</option>
+                                        <option value = "0.6">[4.33]</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Vertical Clock Voltage<br> Amplitude
+                                </td>
+                                <td>
+                                    <select id = "clockVoltage">
+                                        <option value = "0">Normal</option>
+                                        <option value = "1">+1</option>
+                                        <option value = "2">+2</option>
+                                        <option value = "3">+3</option>
+                                        <option value = "4">+4</option>
+                                    </select>
+                                </td>
+                            </tr>       
+                        </table>
                         </div>
 
                         <div class = "wireBox">
                             <span class = "boxLabel">Horizontal Pixel Shift</span>
+                            <table>
+                                <tr>
+                                    <td>
+                                        Readout Rate
+                                    </td>
+                                    <td>
+                                        <select id = "readOut">
+                                            <option value = "0.6">1MHz at 16 Bit</option>
+                                            <option value = "0.6">[1.13]</option>
+                                            <option value = "0.6">[2.2]</option>
+                                            <option value = "0.6">[4.33]</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Pre-Amplifier Gain
+                                    </td>
+                                    <td>
+                                        <select id = "preAmpGain">
+                                            <option value = "0">Gain 1</option>
+                                            <option value = "1">Gain 2</option>
+                                        </select>
+                                    </td>
+                                </tr>    
+                            </table>
+                            <div style = "height : 10px"></div>
+                            <table> 
+                                <tr>
+                                    <td style = "width:35%">Output Amplifier</td>
+                                    <td>
+                                        <input type = "radio" id = "em" name = "amp" value = "em"> Electron <br>
+                                        <input type = "radio" id = "conventional" name = "amp" value = "conventional"> Conventional
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -144,17 +297,48 @@
                     <div id = "Baseline" class = "wideColumn">
                         <div class = "wireBox">
                         <span class = "boxLabel">Baseline</span>
+                        <table>
+                            <tr>
+                                <td><input type = "checkbox"> Baseline Clamp </td>
+                            </tr>
+                        </table>
                         </div>
                     </div>
                     <div id = "column2" class = "narrowColumn">
                         <div class = "wireBox">
                         <span class = "boxLabel">Electron Multiplier (EM) Gain</span>
+
+                        <table>
+                            <tr>
+                                <td style = "width:60%;"><input type = "checkbox"> Enabled </td>
+                                <td><input type = "button" value = "Advanced"></td>
+                            </tr>
+                        </table>
+                        <div style = "height : 10px"></div>
+                        <table>
+                            <tr>
+                                <td style = "width:70%;"> Electron Multiplier Gain Level </td>
+                                <td><input type = "number" value = "0" style = "width:42px;"></td>
+                            </tr>
+                        </table>
+
                         </div>
                     </div>
                 </div>
 
                 <div id = "thirdRow" class = "row">
-
+                    <div id = "optAcquire" class = "fullColumn">
+                        <div class = "wireBox">
+                        <span class = "boxLabel">OptAcquire</span>
+                        <table>
+                            <tr>
+                                <td style = "width:25%;"><input type = "button" value = "OptAcquire Menu"></td>
+                                <td style = "width:15%;">Active Mode</td>
+                                <td style = "color:green;">No Mode Active</td>
+                            </tr>
+                        </table>
+                        </div>
+                    </div>
                 </div>
 
             </div>
