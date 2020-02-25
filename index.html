@@ -7,12 +7,14 @@
                 font-family: "Segoe UI";
             }
 
+
             .mainWindow {
                 border : 0.5px solid black;
                 width : 540px;
                 height : 560px;
                 background : #f0f0f0;
                 font-size : 12pt;
+                display : inline-block;
                 
             }
             .title {
@@ -218,12 +220,12 @@
                         <table>
                             <tr>
                                 <td>Exposure Time (secs)</td>
-                                <td><input type = "text" class = "guiTextBox"></td>
+                                <td><input type = "text" class = "guiTextBox" value = "0.1" id = "exposureTime"></td>
                             </tr>
 
                             <tr>
                                 <td>Number of Accumulations</td>
-                                <td><input type = "text" class = "guiTextBox"></td>
+                                <td><input type = "text" class = "guiTextBox" value = "1" id = "numAccumulations"></td>
                             </tr>
 
                             <tr>
@@ -389,5 +391,18 @@
 
         </div>
 
+        </div>
+
+        <div class = "instrumentPanel" id = "mainControls"></div>
+        <div class = "container" id = "mainContainer">
+        </div>
+
     </body>
+    <script src="js/d3.min.js"></script>
+    <script src="js/jsonImages.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/cameraDefs.js"></script>
+    <script src="js/solisSim.js"></script>
+    <script src="js/guiCallbacks.js"></script>
+
 </html>
