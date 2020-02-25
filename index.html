@@ -7,7 +7,6 @@
                 font-family: "Segoe UI";
             }
 
-
             .mainWindow {
                 border : 0.5px solid black;
                 width : 540px;
@@ -82,7 +81,7 @@
             .narrowColumn {
 
                 display : flex;
-                flex-basis : 50%;
+                flex-basis : 60%;
                 flex-direction : column;
                 flex-grow : 0;
             }
@@ -306,10 +305,9 @@
                                     </td>
                                     <td>
                                         <select id = "readOut">
-                                            <option value = "0.6">1MHz at 16 Bit</option>
-                                            <option value = "0.6">[1.13]</option>
-                                            <option value = "0.6">[2.2]</option>
-                                            <option value = "0.6">[4.33]</option>
+                                            <option value = "conv-0.08">80kHz at 16 Bit</option>
+                                            <option value = "conv-1">1MHz at 16 Bit</option>
+                                            <option value = "conv-3">3MHz at 16 Bit</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -330,8 +328,8 @@
                                 <tr>
                                     <td style = "width:35%">Output Amplifier</td>
                                     <td>
-                                        <input type = "radio" id = "em" name = "amp" value = "em" checked = "true"> Electron <br>
-                                        <input type = "radio" id = "conventional" name = "amp" value = "conventional"> Conventional
+                                        <input type = "radio" id = "em" name = "amp" value = "em"> Electron Multiplying <br>
+                                        <input type = "radio" id = "conv" name = "amp" value = "conventional" checked = "true"> Conventional
                                     </td>
                                 </tr>
                             </table>
@@ -356,7 +354,7 @@
 
                         <table>
                             <tr>
-                                <td style = "width:60%;"><input type = "checkbox"> Enabled </td>
+                                <td style = "width:60%;"><input type = "checkbox" checked disabled> Enabled </td>
                                 <td style = "text-align: right; padding-right:10px;"><input type = "button" value = "Advanced" class = "thinButton"></td>
                             </tr>
                         </table>
@@ -364,7 +362,7 @@
                         <table>
                             <tr>
                                 <td style = "width:70%;"> Electron Multiplier Gain Level </td>
-                                <td><input type = "number" value = "0" style = "width:42px;"></td>
+                                <td><input type = "number" value = "100" style = "width:42px;" id = 'emGain'></td>
                             </tr>
                         </table>
 

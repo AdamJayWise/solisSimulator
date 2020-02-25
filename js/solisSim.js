@@ -11,7 +11,9 @@ var app = {
  'numAccumulations' : 1, // number of accumulations
  'wavelength' : 500, // wavelength of light incident on camera, in nm
  'featureBrightness' : 10, // peak brightness of the feature in photons / counts / whatever
- 'activeDataSet' : 0 // which data set is currently active
+ 'activeDataSet' : 0, // which data set is currently active
+ 'cycleTime' : 0.1, // seconds per frame
+'readOutRate' : 0.08 //readout rate in MHz
 }
 // overall idea...
 // I want one or more camera objects, each one has an image object which it displays
@@ -112,11 +114,12 @@ function Camera(paramObj){
 
     self.darkCurrent = 0.001; // camera dark current in e/pix/sec
     self.emGain = 0; // em gain flag
-    self.model = models['BV']; // what chip variant
-
+    self.model = models['BV']; // what chip variant is this camera using
 
     self.pixelDecimation = 1; // factor to reduce resolution to ease display on a monitor
     self.hasRealImage = true; // should this camera have another real image available?
+
+    self.amplifier = 'conventional'; // is the camera using conventional or em amplifier
 
     if (paramObj){
         self.div = d3.select('#' + paramObj.containerDivID).append('div').attr('class','cameraDiv');
@@ -138,7 +141,7 @@ function Camera(paramObj){
 
     self.div.style('position', 'fixed')
                     .style('top','0')
-                    .style('right','10')
+                    .style('left','580')
     self.canvas  = self.div
                     .append('div')
                     .attr('class','canvasHolder')
@@ -184,17 +187,17 @@ function Camera(paramObj){
     
     var readNoiseLabel = labelContainer.append('span')
         .style('margin','5')
-        .html(self.readNoise + ' e<sup>-</sup> Read Noise')
+        //.html(self.readNoise + ' e<sup>-</sup> Read Noise')
         .attr('class','windowLabel')
     
     var QElabel = labelContainer.append('span')
         .style('margin','5px')
-        .html(Math.round(self.QE*100) + '% QE')
+        //.html(Math.round(self.QE*100) + '% QE')
         .attr('class','windowLabel')
 
     var FPSlabel = labelContainer.append('span')
         .style('margin','5px')
-        .html(self.frameRateHz + ' FPS')
+        //.html(self.frameRateHz + ' FPS')
         .attr('class','windowLabel')
     
     self.updateQELabel = function(n){
@@ -203,14 +206,14 @@ function Camera(paramObj){
 
     self.updateReadNoiseLabel = function(n){
         if (self.readNoise < 1){
-            readNoiseLabel.html('<1 e<sup>-</sup> Read Noise')
+            //readNoiseLabel.html('<1 e<sup>-</sup> Read Noise')
             return
         }
-        readNoiseLabel.html(self.readNoise + ' e<sup>-</sup> Read Noise')
+        //readNoiseLabel.html(self.readNoise + ' e<sup>-</sup> Read Noise')
     }
 
     self.updateFPSLabel = function(n){
-        FPSlabel.html(self.frameRateHz + ' FPS')
+        //FPSlabel.html(self.frameRateHz + ' FPS')
     }
 
     // create image data
@@ -248,8 +251,17 @@ function Camera(paramObj){
         
 
         // start with a simple background of read noise, offset by 2 counts
+
+        var emGain = 0;
+        if (self.amplifier == 'conventional'){
+            emGain = 1;
+        }
+        else {
+            emGain = self.emGain;
+        }
+
         for( var i = 0; i<app['numAccumulations']; i++){
-            self.simImage.data = arraySum(self.simImage.data, randnSample(numSamples = self.xPixels * self.yPixels, mu = self.offset, sigma = self.readNoise));
+            self.simImage.data = arraySum(self.simImage.data, randnSample(numSamples = self.xPixels * self.yPixels, mu = self.offset, sigma = self.readNoise / emGain));
             
 
             // I'd like to add a feature which efficienty adds CIC noise.  I'd rather not roll each pixel
@@ -270,7 +282,6 @@ function Camera(paramObj){
                 var areaFrac = (self.xPixelSize * self.yPixelSize) / (16*16);
                 for (var x1 = 0; x1 < self.xPixels; x1++){
                     for (var x2 = 0; x2 < self.yPixels; x2++){
-
                         q = poissonSample(app.featureBrightness * self.QE * app['exposureTime'] * areaFrac * self.realImage.get(x1,x2) , 1)[0];
                         self.simImage.set(x1,x2, q + self.simImage.get(x1,x2));
                     }
@@ -286,13 +297,17 @@ function Camera(paramObj){
     this.draw = function(){
         var arr = self.simImage;
         var areaFrac = 1;
+        var readNoise = self.readNoise;
+        if (self.amplifier == 'em'){
+            readNoise = readNoise / self.emGain;
+        }
         if (self.hasRealImage){
             areaFrac = (self.xPixelSize * self.yPixelSize) / (16*16);
         } 
 
         var darkCounts = self.darkCurrent * app['exposureTime'] * app['numAccumulations'];
-        var arrMax = app['numAccumulations'] * (self.offset + 2*self.readNoise + self.QE * areaFrac * app.exposureTime * app.featureBrightness + 0.5 * Math.sqrt(self.QE * areaFrac * app.featureBrightness )) + darkCounts;//Math.max(...arr.data);
-        var arrMin = app['numAccumulations'] * (self.offset - 2*self.readNoise - Math.sqrt(darkCounts)) + darkCounts;
+        var arrMax = app['numAccumulations'] * (self.offset + 2 * readNoise + self.QE * areaFrac * app.exposureTime * app.featureBrightness + 0.5 * Math.sqrt(self.QE * areaFrac * app.featureBrightness )) + darkCounts;//Math.max(...arr.data);
+        var arrMin = app['numAccumulations'] * (self.offset - 2 * readNoise - Math.sqrt(darkCounts)) + darkCounts;
         var arrRange = arrMax - arrMin;
         
         var canvas = this.canvas._groups[0][0];
@@ -471,42 +486,6 @@ checkBoxDiv
     .attr('value','Slow')
     .attr('id','Slow')
 
-d3.selectAll('[type = radio]').on('change', function(){
-     var self = this;
-     app.mode = this.value;
-
-     cameras.forEach( function(cam){
-        cam.readNoise = cam['readNoise' + app.mode];
-        cam.frameRateHz = cam['frameRateHz' + app.mode];
-        console.log(app.mode);
-        cam.updateReadNoiseLabel();
-        cam.updateFPSLabel();
-        cam.updateData();
-        cam.draw();
-    } );
-
-
-
-
-     // update the explainer box
-     if (self.value == 'Fast'){
-        d3.select('.explainerBox .content').html(`Above are windows simulating each camera, acquiring 16-bit image
-        data as quickly as possible.  Each window shows what you'd see if you swapped out each camera, without changing magnification or optics.
-        "Signal peak" is equal to the number of photons hitting a 16um x 16um area at the brightest 99th percentile of the image.
-        Frame rates are relative. Resolution of each camera has been reduced to 1/6th of real to ease display on your screen.`)
-     }
-
-     if (self.value == 'Slow'){
-        d3.select('.explainerBox .content').html(`Above are windows simulating each camera, acquiring 16-bit image
-        data with a 30s exposure time.  Each window shows what you'd see if you swapped out each camera, without changing 
-        magnification or optics.
-        "Signal peak" is equal to the number of photons hitting a 16um x 16um area at the brightest 99th percentile of the image. 
-        Resolution of each camera has been reduced to 1/6th of real to ease display on your screen.`)
-     }
-
-     
-    })
-
 
 }
 
@@ -547,25 +526,19 @@ function modRange(a, lowerLim, upperLim){
 
 // animate camera
 function animate(){
+
+    var readTime = (cameras[0].xPixels * cameras[0].yPixels) / (app['readOutRate'] * 10**6)
+    app['cycleTime'] = app['numAccumulations'] * (app['exposureTime'] + readTime);
+
     var frameRateMultiplier = Math.min(...cameras.map(x=>(1/x.frameRateHz)));
     delta++;
-    if (1){
-        //delta = 0;
-        objPos[0] = modRange( objPos[0] + speedMultiplier * (Math.random() - 0.5), -32, 32);
-        objPos[1] = modRange( objPos[1] + speedMultiplier * (Math.random() - 0.5), -32, 32);
-
-        function testFrameRate(cam){
-            if ( (delta % Math.round(1/cam.frameRateHz / frameRateMultiplier) == 0) || delta == 1 ){
-                cam.updateData();
-                cam.draw();
-            }
-        }
-
-        //cameras.forEach(x=>x.updateData());
-        //cameras.forEach(x=>x.draw());
-        cameras.forEach(testFrameRate)
+    if (delta % Math.round(app.cycleTime*60) == 0){
+        cameras.forEach( function(cam){
+            cam.updateData();
+            cam.draw();
+        })
     }
-    window.requestAnimationFrame(animate);
+        window.requestAnimationFrame(animate);
 }
 
 
