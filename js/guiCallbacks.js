@@ -1,7 +1,16 @@
 // accumulations callback
 var accumButton = d3.select('#numAccumulations');
 accumButton.on('change', function(){
-    app['numAccumulations'] = Math.round(Number(this.value));
+    var newVal = Math.round(Number(this.value)) | 1;
+    this.value = newVal;
+    app['numAccumulations'] = newVal;
+
+    //update kind of useless text boxes
+    d3.select('#accumCycleTime').attr('value', app['exposureTime']);
+    d3.select('#accumCycleFreq').text(Math.round( (1/(app['numAccumulations']*app['exposureTime']))*1000)/1000 + 'Hz');
+    d3.select('#kineticCycleTime').attr('value', app['exposureTime'] * app['numAccumulations']);
+    d3.select('#kineticCycleFreq').text(Math.round( (1/app['exposureTime'])*1000)/1000 + 'Hz');
+
 });
 
 // em gain input callback
@@ -15,10 +24,20 @@ emGainInput.on('change', function(){
 })
 
 // exposureTime callback
-var accumButton = d3.select('#exposureTime');
-accumButton.on('change', function(){
-    app['exposureTime'] = Number(this.value);
-    console.log('ting')
+var expButton = d3.select('#exposureTime');
+expButton.on('change', function(){
+    var newVal = Number(this.value) | 0;
+    newVal = Math.min(300,newVal);
+    newVal = Math.max(app['readTime'], newVal);
+    
+    this.value = newVal;
+    app['exposureTime'] = newVal;
+    d3.select('#exposureFrequency').text(Math.round( (1/newVal)*1000)/1000 + 'Hz');
+
+    d3.select('#accumCycleTime').attr('value', app['exposureTime']);
+    d3.select('#accumCycleFreq').text(Math.round( (1/(app['numAccumulations']*newVal))*1000)/1000 + 'Hz');
+    d3.select('#kineticCycleTime').attr('value', app['exposureTime'] * app['numAccumulations']);
+    d3.select('#kineticCycleFreq').text(Math.round( (1/app['exposureTime'])*1000)/1000 + 'Hz');
 });
 
 // readout rate callback
@@ -57,3 +76,8 @@ amp.on('change', function(){
     }
 });
 
+// shift speed callback
+var shiftSelect = d3.select('#shiftSpeed');
+shiftSelect.on('change', function(){
+    app['verticalShift'] = Number(this.value);
+});

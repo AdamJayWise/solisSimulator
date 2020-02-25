@@ -127,14 +127,30 @@
                 width : 100%;
             }
 
-            td {
-                width : 50%;
+            .inputLabeltd {
+                width : 60%;
                 white-space:nowrap;
                 vertical-align : middle;
             }
 
+            .inputtd{
+                width : 20%;
+            }
+
+            input[type=text]{
+                font-size : 90%;
+            }
+
             .guiTextBox {
-                width : 80px;
+                width : 50px;
+            }
+
+            .inputSideLabel {
+                width : 20%;
+                text-align: left;
+                font-style: italic;
+                padding-left : 0px;
+                margin-left : -3px;
             }
 
             input[type=number]::-webkit-inner-spin-button {
@@ -168,6 +184,11 @@
             .choiceBlock select {
                 margin-top : -5px;
                 width : 128px;
+            }
+
+            .disabled {
+                color : gray;
+                font-style : italic;
             }
 
         </style>
@@ -218,8 +239,9 @@
                         <span class = "boxLabel">Timings</span>
                         <table>
                             <tr>
-                                <td>Exposure Time (secs)</td>
-                                <td><input type = "text" class = "guiTextBox" value = "0.1" id = "exposureTime"></td>
+                                <td class = "inputLabeltd">Exposure Time (secs)</td>
+                                <td class = "inputtd"><input type = "text" class = "guiTextBox" value = "0.1" id = "exposureTime"></td>
+                                <td id = 'exposureFrequency' class = 'inputSideLabel'></td>
                             </tr>
 
                             <tr>
@@ -228,18 +250,20 @@
                             </tr>
 
                             <tr>
-                                <td>Accum Cycle Time (secs)</td>
-                                <td><input type = "text" class = "guiTextBox"></td>
+                                <td class = "disabled">Accum Cycle Time (secs)</td>
+                                <td><input type = "text" class = "guiTextBox" id = "accumCycleTime" disabled></td>
+                                <td id = 'accumCycleFreq' class = 'inputSideLabel'></td>
                             </tr>
 
                             <tr>
                                 <td>Kinetic Series Length</td>
-                                <td><input type = "text" class = "guiTextBox"></td>
+                                <td><input type = "text" class = "guiTextBox" value = "&infin;" disabled></td>
                             </tr>
 
                             <tr>
-                                <td>Kinetic Cycle Time (secs)</td>
-                                <td><input type = "text" class = "guiTextBox"></td>
+                                <td class = "disabled">Kinetic Cycle Time (secs)</td>
+                                <td><input type = "text" class = "guiTextBox" id = "kineticCycleTime" disabled></td>
+                                <td id = 'kineticCycleFreq' class = 'inputSideLabel'></td>
                             </tr>
 
                             <tr>
@@ -273,9 +297,9 @@
                                 <td>
                                     <select id = "shiftSpeed" class = "selectType1">
                                         <option value = "0.6">[0.6]</option>
-                                        <option value = "0.6">[1.13]</option>
-                                        <option value = "0.6">[2.2]</option>
-                                        <option value = "0.6">[4.33]</option>
+                                        <option value = "1.13">[1.13]</option>
+                                        <option value = "2.2">[2.2]</option>
+                                        <option value = "4.33">[4.33]</option>
                                     </select>
                                 </td>
                             </tr>

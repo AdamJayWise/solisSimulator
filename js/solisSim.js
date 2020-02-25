@@ -13,7 +13,8 @@ var app = {
  'featureBrightness' : 10, // peak brightness of the feature in photons / counts / whatever
  'activeDataSet' : 0, // which data set is currently active
  'cycleTime' : 0.1, // seconds per frame
-'readOutRate' : 0.08 //readout rate in MHz
+'readOutRate' : 0.08, //readout rate in MHz
+'verticalShift' : 0.6 // vertical shift time in microseconds
 }
 // overall idea...
 // I want one or more camera objects, each one has an image object which it displays
@@ -527,8 +528,9 @@ function modRange(a, lowerLim, upperLim){
 // animate camera
 function animate(){
 
-    var readTime = (cameras[0].xPixels * cameras[0].yPixels) / (app['readOutRate'] * 10**6)
-    app['cycleTime'] = app['numAccumulations'] * (app['exposureTime'] + readTime);
+    app['readTime'] = (cameras[0].xPixels * cameras[0].yPixels) / (app['readOutRate'] * 10**6);
+    app['readTime'] += cameras[0].yPixels * app['verticalShift'] / (10**6);
+    app['cycleTime'] = app['numAccumulations'] * (app['exposureTime'] + app['readTime']);
 
     var frameRateMultiplier = Math.min(...cameras.map(x=>(1/x.frameRateHz)));
     delta++;
