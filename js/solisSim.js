@@ -138,10 +138,10 @@ function Camera(paramObj){
     self.yPixels = Math.round(self.yPixels / self.pixelDecimation)
     
     // add a canvas to the document to display this data
-    var displayScaleFactor = 0.9;
+    var displayScaleFactor = 1;
 
     self.div.style('position', 'fixed')
-                    .style('top','0')
+                    .style('top','5')
                     .style('left','580')
     self.canvas  = self.div
                     .append('div')
@@ -463,29 +463,6 @@ function initializeControls(){
 
     d3.select('#mainControls').append('hr')
 
-    var checkBoxDiv = d3.select('#mainControls')
-    .append('div')
-    .attr('class','sliderLabel')
-    .attr('id', 'checkBoxDiv')
-  
-checkBoxDiv
-    .append('label')
-    .text("Fast Mode - Simulate Max Frame Rate")
-    .append('input')
-    .attr('type','radio')
-    .attr('name','mode')
-    .attr('value','Fast')
-    .attr('id','Fast')
-    .attr('checked','true')
-
-checkBoxDiv
-    .append('label')
-    .text("Slow Mode - Simulate 30 Second Exposure")
-    .append('input')
-    .attr('type','radio')
-    .attr('name','mode')
-    .attr('value','Slow')
-    .attr('id','Slow')
 
 
 }

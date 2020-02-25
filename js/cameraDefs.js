@@ -134,6 +134,7 @@ var cameraDefs = {
             containerDivID : 'subContainer',
             model : models['BV'],
             displayName: 'iXon Ultra 897 BV'},
+            activeAreaWellDepth : 180000,
 
     'newton971' : {
         shortName : 'Newton971',

@@ -7,6 +7,11 @@
                 font-family: "Segoe UI";
             }
 
+            canvas {
+                border : 4px solid black;
+                border-radius : 5px;
+            }
+
             .mainWindow {
                 border : 0.5px solid black;
                 width : 540px;
@@ -157,6 +162,11 @@
                 opacity: 1;
             }
 
+            input[type=checkbox]{
+                margin : 0px;
+                padding : 0px;
+            }
+
             select {
                 font-size : 8pt;
                 background-color : #e1e1e1;
@@ -164,7 +174,7 @@
             }
 
             .selectType1 {
-                width : 55px;
+                width : 60px;
             }
 
             .thinButton {
@@ -189,6 +199,11 @@
             .disabled {
                 color : gray;
                 font-style : italic;
+            }
+
+            table.sliderLabel {
+                width : 300px;
+                display : block;
             }
 
         </style>
@@ -273,14 +288,14 @@
                         </table>
                         <table>
                             <tr>
-                                <td style = "width:40%;">
+                                <td style = "width:45%;">
                                     <label class = "checkbox-label">
-                                    <input type = "checkbox"> 
+                                    <input type = "checkbox" checked> 
                                     <span class = "checkbox-custom"></span>
                                     Frame Transfer
                                 </label>
                                 </td>
-                                <td><input type = "checkbox"> Cosmic Ray Removal</td>
+                                <td style = "width:50%;"><input type = "checkbox" checked> Cosmic Ray Removal</td>
                             </tr>
 
                         </table>
