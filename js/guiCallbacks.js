@@ -93,3 +93,8 @@ var ft = d3.select('#frameTransfer');
 ft.on('change', function(){
     app['frameTransfer'] = ft.property('checked')
 });
+
+var updates = d3.select('#whatsNew');
+updates.on('click', function(){
+    updates.remove();
+})

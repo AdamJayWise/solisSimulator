@@ -206,9 +206,30 @@
                 display : block;
             }
 
+            #whatsNew {
+                border : 1px solid black;
+                background: white;
+                box-shadow: 3px 3px;
+                width : 300px;
+                position : absolute;
+                z-index : 10000;
+                padding : 10px;
+                font-size : 80%;
+            }
+
         </style>
     </head>
     <body>
+
+        <div id = "whatsNew">
+            What's New (click to dismiss)
+            <ul>
+                <li>Added "streaking" - shows up at low exposure time and high sample brightness</li>
+                <li>"Frame transfer" button enforces exposure time > read-out time when active</li>
+                <li>Vertical shift time effects frame rate</li>
+            </ul>
+            - 
+        </div>
 
         <div class = 'mainWindow'> <!-- this is the main window for the gui -->
             <div class = 'title'>
