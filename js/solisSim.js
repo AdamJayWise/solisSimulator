@@ -237,6 +237,7 @@ function Camera(paramObj){
     if (self.shortName){
         self.realImage = new Arr2d(self.xPixels, self.yPixels, 0);
         self.realImage.data = jsonImage[self.shortName + app.activeDataSet];
+        self.crossSection = jsonImage[self.shortName + app.activeDataSet + '_x'];
     }
 
     this.updateData = function(){
@@ -283,7 +284,8 @@ function Camera(paramObj){
                 var areaFrac = (self.xPixelSize * self.yPixelSize) / (16*16);
                 for (var x1 = 0; x1 < self.xPixels; x1++){
                     for (var x2 = 0; x2 < self.yPixels; x2++){
-                        q = poissonSample(app.featureBrightness * self.QE * app['exposureTime'] * areaFrac * self.realImage.get(x1,x2) , 1)[0];
+                        var streak = self.crossSection[x1] * app['featureBrightness'] * app['verticalShift'] / 10**6;
+                        q = poissonSample(streak + app.featureBrightness * self.QE * app['exposureTime'] * areaFrac * self.realImage.get(x1,x2) , 1)[0];
                         self.simImage.set(x1,x2, q + self.simImage.get(x1,x2));
                     }
                 }
@@ -378,7 +380,7 @@ function initializeControls(){
         labelText : 'Signal Peak, Photons',
         parameter : 'featureBrightness',
         min : 0,
-        max : 100,
+        max : 300,
         defaultValue: 3
     }
 
@@ -449,11 +451,13 @@ function initializeControls(){
     var dataSetChooser = chooserDiv.append('select').attr('name','dataSet');
     dataSetChooser.append('option').property('value','0').text('Cells 0')
     dataSetChooser.append('option').property('value','1').text('Cells 1')
+    dataSetChooser.append('option').property('value','2').text('Circles')
     dataSetChooser.on('change', function(){
         var self = this;
         app.activeDataSet = this.value;
         cameras.forEach(function(cam){
             cam.realImage.data = jsonImage[cam.shortName + self.value];
+            cam.crossSection = jsonImage[cam.shortName + self.value + '_x'];
             cam.updateData();
             cam.draw();
         });

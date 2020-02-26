@@ -1,7 +1,7 @@
 // accumulations callback
 var accumButton = d3.select('#numAccumulations');
 accumButton.on('change', function(){
-    var newVal = Math.round(Number(this.value)) | 1;
+    var newVal = Math.round(Number(this.value)) || 1;
     this.value = newVal;
     app['numAccumulations'] = newVal;
 
@@ -26,13 +26,16 @@ emGainInput.on('change', function(){
 // exposureTime callback
 var expButton = d3.select('#exposureTime');
 expButton.on('change', function(){
-    var newVal = Number(this.value) | 0;
+    var newVal = Number(this.value) || 0;
+    console.log(newVal)
     newVal = Math.min(300,newVal);
     newVal = Math.max(app['readTime'], newVal);
     
     this.value = newVal;
     app['exposureTime'] = newVal;
     d3.select('#exposureFrequency').text(Math.round( (1/newVal)*1000)/1000 + 'Hz');
+
+    console.log(newVal)
 
     d3.select('#accumCycleTime').attr('value', app['exposureTime']);
     d3.select('#accumCycleFreq').text(Math.round( (1/(app['numAccumulations']*newVal))*1000)/1000 + 'Hz');
