@@ -14,7 +14,8 @@ var app = {
  'activeDataSet' : 0, // which data set is currently active
  'cycleTime' : 0.1, // seconds per frame
 'readOutRate' : 0.08, //readout rate in MHz
-'verticalShift' : 0.6 // vertical shift time in microseconds
+'verticalShift' : 0.6, // vertical shift time in microseconds
+'frameTransfer' : true, // is frame transfer mode active
 }
 // overall idea...
 // I want one or more camera objects, each one has an image object which it displays
@@ -309,8 +310,8 @@ function Camera(paramObj){
         } 
 
         var darkCounts = self.darkCurrent * app['exposureTime'] * app['numAccumulations'];
-        var arrMax = app['numAccumulations'] * (self.offset + 2 * readNoise + self.QE * areaFrac * app.exposureTime * app.featureBrightness + 0.5 * Math.sqrt(self.QE * areaFrac * app.featureBrightness )) + darkCounts;//Math.max(...arr.data);
-        var arrMin = app['numAccumulations'] * (self.offset - 2 * readNoise - Math.sqrt(darkCounts)) + darkCounts;
+        var arrMax = app['numAccumulations'] * 1.1 * Math.sqrt(readNoise**2 + (self.QE * areaFrac * app.exposureTime * app.featureBrightness)**2 ) + darkCounts;//Math.max(...arr.data);
+        var arrMin = app['numAccumulations'] * darkCounts;
         var arrRange = arrMax - arrMin;
         
         var canvas = this.canvas._groups[0][0];

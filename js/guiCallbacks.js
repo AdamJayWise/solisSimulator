@@ -26,16 +26,18 @@ emGainInput.on('change', function(){
 // exposureTime callback
 var expButton = d3.select('#exposureTime');
 expButton.on('change', function(){
-    var newVal = Number(this.value) || 0;
-    console.log(newVal)
+
+
+    var newVal = Number(this.value) || 0.000010;
     newVal = Math.min(300,newVal);
-    newVal = Math.max(app['readTime'], newVal);
     
+    if (app['frameTransfer']){
+        newVal = Math.max(app['readTime'], newVal);
+    }
+
     this.value = newVal;
     app['exposureTime'] = newVal;
     d3.select('#exposureFrequency').text(Math.round( (1/newVal)*1000)/1000 + 'Hz');
-
-    console.log(newVal)
 
     d3.select('#accumCycleTime').attr('value', app['exposureTime']);
     d3.select('#accumCycleFreq').text(Math.round( (1/(app['numAccumulations']*newVal))*1000)/1000 + 'Hz');
@@ -83,4 +85,11 @@ amp.on('change', function(){
 var shiftSelect = d3.select('#shiftSpeed');
 shiftSelect.on('change', function(){
     app['verticalShift'] = Number(this.value);
+});
+
+
+// frame transfer callback
+var ft = d3.select('#frameTransfer');
+ft.on('change', function(){
+    app['frameTransfer'] = ft.property('checked')
 });
