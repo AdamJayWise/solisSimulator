@@ -1,10 +1,7 @@
 console.log('videoSim.js - Adam Wise 2019')
 
-// global variables, I love them
-var objPos = [0,0]; // x,y position of the feature in pixels
 
-var speedMultiplier = 0.5; // fudge factor for random walk speed of the feature
-
+// object representing the state of the acquisition 
 var app = {
  'mode' : 'Fast', // fast or slow imaging mode
  'exposureTime' : 0.1, // exposure time in seconds
@@ -16,19 +13,10 @@ var app = {
 'readOutRate' : 0.08, //readout rate in MHz
 'verticalShift' : 0.6, // vertical shift time in microseconds
 'frameTransfer' : true, // is frame transfer mode active
+'hbin' : 1, // horizontal binning extent in pixels
+'vbin' : 1, // vertical binning extent in pixels
 }
-// overall idea...
-// I want one or more camera objects, each one has an image object which it displays
-// the camera has a height and width, and controls
-// let me start by creating a way to display the image, and show an animated image of a
-// HxW screen with poisson sampling
 
-// ok now for the next feature - a switch that will change between "fast imaging", and "long exposures"
-// the "fast imaging" mode will give a qualitative idea for real-time imaging
-// the "slow imaging / long exposure" mode will give 
-// maybe a spectra mode as well, which uses a set height and calculates the spectrum
-
-// ok - now, how to add a changeable 'resolution'
 
 // Knuth low-lambda Poisson random sample generator
 function poissonSample( lambda = 1, numSamples = 1 ){
@@ -144,6 +132,7 @@ function Camera(paramObj){
     self.div.style('position', 'fixed')
                     .style('top','5')
                     .style('left','580')
+
     self.canvas  = self.div
                     .append('div')
                     .attr('class','canvasHolder')
@@ -219,7 +208,7 @@ function Camera(paramObj){
     }
 
     // create image data
-    self.simImage = new Arr2d(self.xPixels, self.yPixels, 0)
+    self.simImage = new Arr2d(self.xPixels, self.yPixels, 0);
 
     if (self.hasRealImage & !self.imageSource){
         var v = 0;
@@ -278,19 +267,39 @@ function Camera(paramObj){
                 self.simImage.set(xCoord, yCoord, self.offset + (1+5*Math.random()));
             }
         
+            var vbin = app['vbin']; // vertical binning extent
+            var hbin = app['hbin']; // horizontal binning extent
+
+            // i want to sum the values of the reference image over a rectangle of height vbin, width hbin
+            // and then assign that value to all pixels in the rect
+            // i was thinking about checking if eg x % hbin == 0, and ignoring otherwise
 
             // generate data from stored image using poisson sampling
-            if(self.hasRealImage){
-                var q;
-                var areaFrac = (self.xPixelSize * self.yPixelSize) / (16*16);
-                for (var x1 = 0; x1 < self.xPixels; x1++){
-                    for (var x2 = 0; x2 < self.yPixels; x2++){
+            var q;
+            var areaFrac = (self.xPixelSize * self.yPixelSize) / (16*16);
+            for (var x1 = 0; x1 < self.xPixels; x1++){
+                for (var x2 = 0; x2 < self.yPixels; x2++){
+                    if ( (x1 % hbin == 0) & (x2 % vbin == 0)){
                         var streak = self.crossSection[x1] * app['featureBrightness'] * app['verticalShift'] / 10**6;
-                        q = poissonSample(streak + app.featureBrightness * self.QE * app['exposureTime'] * areaFrac * self.realImage.get(x1,x2) , 1)[0];
-                        self.simImage.set(x1,x2, q + self.simImage.get(x1,x2));
-                    }
-                }
-                
+                        var pixVal = 0; //pixel value
+                        for (var ii = 0; ii < hbin; ii++){
+                            for (var jj = 0; jj < vbin; jj++){
+                                pixVal += self.realImage.get(x1 + ii, x2 + jj);
+                            }
+                        }
+                        q = poissonSample(streak + app.featureBrightness * self.QE * app['exposureTime'] * areaFrac * pixVal , 1)[0];
+                        //q = app.featureBrightness * self.QE * app['exposureTime'] * areaFrac * pixVal
+                        var bgRef = self.simImage.get(x1,x2);
+                        
+                        // --- Loop through and populate pixels within binning area
+                        for (var ii = 0; ii < hbin; ii++){
+                            for (var jj = 0; jj < vbin; jj++){
+                                self.simImage.set(x1 + ii, x2 + jj, q + bgRef);
+                            }
+                        }
+                        // --- done with Loop through and populate pixels within binning area
+                    } // done with conditional 'do if at binning stride 
+                } 
             }
         }
 
@@ -310,7 +319,7 @@ function Camera(paramObj){
         } 
 
         var darkCounts = self.darkCurrent * app['exposureTime'] * app['numAccumulations'];
-        var arrMax = app['numAccumulations'] * 1.1 * Math.sqrt(readNoise**2 + (self.QE * areaFrac * app.exposureTime * app.featureBrightness)**2 ) + darkCounts;//Math.max(...arr.data);
+        var arrMax =  1.1 * Math.sqrt(app['numAccumulations']*(readNoise**2 + (app['hbin'] * app['vbin'] * self.QE * areaFrac * app.exposureTime * app.featureBrightness)**2 )) + darkCounts;//Math.max(...arr.data);
         var arrMin = app['numAccumulations'] * darkCounts;
         var arrRange = arrMax - arrMin;
         
@@ -510,7 +519,7 @@ function modRange(a, lowerLim, upperLim){
 // animate camera
 function animate(){
 
-    app['readTime'] = (cameras[0].xPixels * cameras[0].yPixels) / (app['readOutRate'] * 10**6);
+    app['readTime'] = (cameras[0].xPixels * cameras[0].yPixels) / (app['readOutRate'] * 10**6) / (app['hbin'] * app['vbin']);
     app['readTime'] += cameras[0].yPixels * app['verticalShift'] / (10**6);
     app['cycleTime'] = app['numAccumulations'] * (app['exposureTime'] + app['readTime']);
 
