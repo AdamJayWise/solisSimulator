@@ -15,6 +15,9 @@ var app = {
 'frameTransfer' : true, // is frame transfer mode active
 'hbin' : 1, // horizontal binning extent in pixels
 'vbin' : 1, // vertical binning extent in pixels
+'graphScaleMin' : 0,
+'graphScaleMax' : 10,
+'autoScale' : true,
 }
 
 
@@ -319,8 +322,25 @@ function Camera(paramObj){
         } 
 
         var darkCounts = self.darkCurrent * app['exposureTime'] * app['numAccumulations'];
-        var arrMax =  1.1 * Math.sqrt(app['numAccumulations']*(readNoise**2 + (app['hbin'] * app['vbin'] * self.QE * areaFrac * app.exposureTime * app.featureBrightness)**2 )) + darkCounts;//Math.max(...arr.data);
-        var arrMin = app['numAccumulations'] * darkCounts;
+        
+        var arrMax = 0;
+        var arrMin = 0;
+
+        if (app['autoScale']){
+            arrMax =  1.1 * Math.sqrt(app['numAccumulations']*(readNoise**2 + ( ( app['hbin'] ) * self.QE * areaFrac * app.exposureTime * app.featureBrightness)**2 )) + darkCounts;//Math.max(...arr.data);            
+            
+            for (var row = 0; row < 256; row++){
+                arrMax=Math.max(arrMax, Math.max(...arr.data.slice(row*256,(row+1)*256)))
+            }
+            
+            arrMin = app['numAccumulations'] * darkCounts;
+        }
+
+        if (!app['autoScale']){
+            arrMax = app['graphScaleMax'];
+            arrMin = app['graphScaleMin'];
+        }
+        
         var arrRange = arrMax - arrMin;
         
         var canvas = this.canvas._groups[0][0];
