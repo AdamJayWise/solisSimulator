@@ -217,6 +217,24 @@
                 font-size : 80%;
             }
 
+            .subGui {
+                padding-top : 10px;
+                position : absolute;
+                top : 70px;
+                left : 20px;
+                width : 520px;
+                height : 460px;
+                z-index : 1000;
+                background-color : white;
+                font-size : 12pt;
+                display : none;
+                font-size : 75%;
+            }
+
+            .subGui .boxLabel {
+                top : -10px;
+            }
+
         </style>
     </head>
     <body>
@@ -224,6 +242,7 @@
         <div id = "whatsNew">
             What's New (click to dismiss)
             <ul>
+                <li>Try the binning tab!</li>
                 <li>Added "streaking" - shows up at low exposure time and high sample brightness</li>
                 <li>"Frame transfer" button enforces exposure time > read-out time when active</li>
                 <li>Vertical shift time effects frame rate</li>
@@ -239,7 +258,7 @@
             <div class = 'mainGuiContainer'>
                 <div class = 'buttonRow'>
                     <div class = 'tab activeTab'>Camera Setup</div>
-                    <div class = 'tab'>Binning / ROI</div>
+                    <div class = 'tab' id = 'binning'>Binning / ROI</div>
                     <div class = 'tab'>Auto-Save</div>
                     <div class = 'tab'>Spooling</div>
                     <div class = 'tab'>Data Averaging Filters</div>
@@ -454,6 +473,56 @@
         <div class = "instrumentPanel" id = "mainControls"></div>
         <div class = "container" id = "mainContainer">
         </div>
+
+    <div class = 'subGui' id = 'binningSetup'>
+        <div id = "secondRow" class = "row">
+            <div id = "Baseline" class = "wideColumn">
+                <div class = "wireBox">
+                <span class = "boxLabel">Region of Interest</span>
+                <table>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+                </div>
+            </div>
+            <div id = "column2" class = "narrowColumn">
+                <div class = "wireBox">
+                <span class = "boxLabel">Binning</span>
+                <div style = "height : 8px;"></div>
+                <table>
+                    <tr>
+                        <td>
+                            <input type = "radio" id = "1x1" name = "binning" value = "1x1" checked> 1x1
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <input type = "radio" id = "2x2" name = "binning" value = "2x2" > 2x2
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <input type = "radio" id = "4x4" name = "binning" value = "4x4" > 4x4
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <input type = "radio" id = "8x8" name = "binning" value = "8x8" > 8x8
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <input type = "radio" id = "16x16" name = "binning" value = "16x16" > 16x16
+                        </td>
+                    </tr>
+                </table>
+                <br>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
     </body>
     <script src="js/d3.min.js"></script>

@@ -98,3 +98,23 @@ var updates = d3.select('#whatsNew');
 updates.on('click', function(){
     updates.remove();
 })
+
+// tab activator callbacks
+d3.selectAll('.tab').on('click', function(){
+    d3.selectAll('.tab').classed('activeTab', false);
+    d3.select(this).classed('activeTab', true);
+
+    // make all other sub-guis invisible, and make this tab's corresponding sub-gui visible
+    d3.selectAll('.subGui').style('display','none');
+    var guiSelector = `#${d3.select(this).property('id')}Setup`;
+    d3.select(guiSelector).style('display','block')
+})
+
+// binning radio buttons callback
+// amplfier choice callback - change the choices available at the readout rate option
+var binButtons = d3.selectAll('input[name=binning]');
+binButtons.on('change', function(){
+    console.log(this.value)
+    app['hbin'] = Number(this.value.split('x')[0]);
+    app['vbin'] = Number(this.value.split('x')[1]);
+});

@@ -1,4 +1,4 @@
-console.log('videoSim.js - Adam Wise 2019')
+console.log('solisSim.js - Adam Wise 2020')
 
 
 // object representing the state of the acquisition 
