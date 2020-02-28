@@ -9,7 +9,7 @@ accumButton.on('change', function(){
     d3.select('#accumCycleTime').attr('value', app['exposureTime']);
     d3.select('#accumCycleFreq').text(Math.round( (1/(app['numAccumulations']*app['exposureTime']))*1000)/1000 + 'Hz');
     d3.select('#kineticCycleTime').attr('value', app['exposureTime'] * app['numAccumulations']);
-    d3.select('#kineticCycleFreq').text(Math.round( (1/app['exposureTime'])*1000)/1000 + 'Hz');
+    d3.select('#kineticCycleFreq').text(Math.round( (1/app['exposureTime'])*100)/100 + 'Hz');
 
 });
 
@@ -35,14 +35,16 @@ expButton.on('change', function(){
         newVal = Math.max(app['readTime'], newVal);
     }
 
+    newVal = Math.round(newVal*100000)/100000;
+
     this.value = newVal;
     app['exposureTime'] = newVal;
-    d3.select('#exposureFrequency').text(Math.round( (1/newVal)*1000)/1000 + 'Hz');
+    d3.select('#exposureFrequency').text(Math.round( (1/newVal)*100)/100 + 'Hz');
 
     d3.select('#accumCycleTime').attr('value', app['exposureTime']);
-    d3.select('#accumCycleFreq').text(Math.round( (1/(app['numAccumulations']*newVal))*1000)/1000 + 'Hz');
+    d3.select('#accumCycleFreq').text(Math.round( (1/(app['numAccumulations']*newVal))*100)/100 + 'Hz');
     d3.select('#kineticCycleTime').attr('value', app['exposureTime'] * app['numAccumulations']);
-    d3.select('#kineticCycleFreq').text(Math.round( (1/app['exposureTime'])*1000)/1000 + 'Hz');
+    d3.select('#kineticCycleFreq').text(Math.round( (1/app['exposureTime'])*100)/100 + 'Hz');
 });
 
 // readout rate callback

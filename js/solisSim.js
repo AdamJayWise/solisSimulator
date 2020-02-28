@@ -283,10 +283,13 @@ function Camera(paramObj){
             for (var x1 = 0; x1 < self.xPixels; x1++){
                 for (var x2 = 0; x2 < self.yPixels; x2++){
                     if ( (x1 % hbin == 0) & (x2 % vbin == 0)){
-                        var streak = self.crossSection[x1] * app['featureBrightness'] * app['verticalShift'] / 10**6;
+                        
+                        var streak = 0; // how bright should the streak of light from readout be
+                        
                         var pixVal = 0; //pixel value
                         for (var ii = 0; ii < hbin; ii++){
                             for (var jj = 0; jj < vbin; jj++){
+                                streak += self.crossSection[x1 + ii] * app['featureBrightness'] * app['verticalShift'] / 10**6;
                                 pixVal += self.realImage.get(x1 + ii, x2 + jj);
                             }
                         }
@@ -332,7 +335,7 @@ function Camera(paramObj){
             for (var row = 0; row < 256; row++){
                 arrMax=Math.max(arrMax, Math.max(...arr.data.slice(row*256,(row+1)*256)))
             }
-            
+
             arrMin = app['numAccumulations'] * darkCounts;
         }
 
