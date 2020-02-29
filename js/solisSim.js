@@ -454,7 +454,7 @@ function initializeControls(){
             .attr('max', configObj.max)
             .attr('value', configObj.defaultValue)
             .attr('step', 1)
-            .style('width','300px')
+            .style('width','350px')
             .attr('class','slider')
         
 
@@ -542,13 +542,13 @@ function modRange(a, lowerLim, upperLim){
 // animate camera
 function animate(){
 
-    app['readTime'] = (cameras[0].xPixels * cameras[0].yPixels) / (app['readOutRate'] * 10**6) / (app['hbin'] * app['vbin']);
-    app['readTime'] += cameras[0].yPixels * app['verticalShift'] / (10**6);
+    app['readTime'] = (cameras[0].xPixels * cameras[0].yPixels) / (app['readOutRate'] * 10**6) / (app['vbin']);
+    app['readTime'] += 2 * cameras[0].yPixels * app['verticalShift'] / (10**6) + 0.0007;
     app['cycleTime'] = app['numAccumulations'] * (app['exposureTime'] + app['readTime']);
 
     var frameRateMultiplier = Math.min(...cameras.map(x=>(1/x.frameRateHz)));
     delta++;
-    if (delta % Math.round(app.cycleTime*60) == 0){
+    if (delta % Math.ceil(app.cycleTime*60) == 0){
         cameras.forEach( function(cam){
             cam.updateData();
             cam.draw();
