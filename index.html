@@ -238,6 +238,10 @@
                 top : -10px;
             }
 
+            .binCustom {
+                width : 40px;
+            }
+
         </style>
     </head>
     <body>
@@ -517,6 +521,23 @@
                     <tr>
                         <td>
                         <input type = "radio" id = "16x16" name = "binning" value = "16x16" > 16x16
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <input type = "radio" id = "custom" name = "binning" value = "custom" > Custom
+                        </td>
+                    </tr>
+                    <tr><td><div style = "height:10px"></div></td></tr>
+                    <tr>
+                        <td>
+                        <input type = "text" id = "hbin" class = "binCustom" value = "2" disabled>  x  <input type = "text" id = "vbin" class = "binCustom" value = "2" disabled>
+                        </td>
+                    </tr>
+                    <tr><td><div style = "height:10px"></div></td></tr>
+                    <tr>
+                        <td>
+                        <input type = "checkbox" id = "softbin" disabled> Perform binnning in software
                         </td>
                     </tr>
                 </table>

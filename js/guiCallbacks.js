@@ -113,10 +113,30 @@ d3.selectAll('.tab').on('click', function(){
 })
 
 // binning radio buttons callback
-// amplfier choice callback - change the choices available at the readout rate option
 var binButtons = d3.selectAll('input[name=binning]');
 binButtons.on('change', function(){
-    console.log(this.value)
+
+    if (this.value == 'custom'){
+        d3.selectAll('.binCustom').property('disabled', false);
+        var newVal = Number(d3.select('#hbin').property('value')) || 1;
+        app['hbin'] = newVal;
+        d3.select('#hbin').property('value', newVal);
+        var newVal = Number(d3.select('#vbin').property('value')) || 1;
+        app['vbin'] = newVal;
+        d3.select('#vbin').property('value', newVal)
+        return null
+    }
+    d3.selectAll('.binCustom').property('disabled', true);
     app['hbin'] = Number(this.value.split('x')[0]);
     app['vbin'] = Number(this.value.split('x')[1]);
+});
+
+// callbacks for changing the custom bin values
+d3.select('#hbin').on('change', function(){
+    var newVal = Number(d3.select('#hbin').property('value')) || 1;
+    app['hbin'] = newVal;
+});
+d3.select('#vbin').on('change', function(){
+    var newVal = Number(d3.select('#vbin').property('value')) || 1;
+    app['vbin'] = newVal;
 });
